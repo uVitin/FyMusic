@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { authRouter } from "./routes/auth.routes";
 
 // Carrega as variáveis do arquivo .env para process.env
 dotenv.config();
@@ -19,6 +20,9 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", message: "FyMusic API rodando 🎵" });
 });
+
+// Rotas de autenticação (cadastro, login)
+app.use("/auth", authRouter);
 
 // --- Inicialização do servidor ---
 app.listen(PORT, () => {
