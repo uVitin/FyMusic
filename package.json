@@ -1,0 +1,13 @@
+{
+  "name": "fymusic",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Clone do Spotify - projeto de portfólio (Next.js + Express + Prisma)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "echo \"Os scripts de dev serao configurados nas proximas fases\""
+  }
+}
