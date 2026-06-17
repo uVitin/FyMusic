@@ -13,11 +13,23 @@ import {
 } from "lucide-react";
 import { usePlayerStore } from "@/store/player";
 
-// Barra do player, conectada ao estado global (store/player).
+// Formata segundos em "m:ss"
+function fmt(t: number) {
+  if (!Number.isFinite(t)) return "0:00";
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
 export function PlayerBar() {
   const current = usePlayerStore((s) => s.current);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const progress = usePlayerStore((s) => s.progress);
+  const duration = usePlayerStore((s) => s.duration);
+  const volume = usePlayerStore((s) => s.volume);
   const togglePlay = usePlayerStore((s) => s.togglePlay);
+  const requestSeek = usePlayerStore((s) => s.requestSeek);
+  const setVolume = usePlayerStore((s) => s.setVolume);
 
   return (
     <footer className="flex items-center gap-3 border-t border-neutral-800 bg-[#181818] px-3 py-2 lg:px-4 lg:py-3">
@@ -75,22 +87,39 @@ export function PlayerBar() {
           </button>
         </div>
 
-        {/* Barra de progresso (ainda visual — vira funcional na Parte 2) */}
+        {/* Barra de progresso funcional (desktop) */}
         <div className="hidden w-full max-w-md items-center gap-2 lg:flex">
-          <span className="text-[11px] text-neutral-400">0:00</span>
-          <div className="h-1 flex-1 rounded-full bg-neutral-600">
-            <div className="h-1 w-0 rounded-full bg-white" />
-          </div>
-          <span className="text-[11px] text-neutral-400">0:00</span>
+          <span className="w-9 text-right text-[11px] text-neutral-400">
+            {fmt(progress)}
+          </span>
+          <input
+            type="range"
+            min={0}
+            max={duration || 0}
+            step={0.1}
+            value={progress}
+            onChange={(e) => requestSeek(Number(e.target.value))}
+            disabled={!current}
+            aria-label="Progresso da música"
+            className="h-1 flex-1 cursor-pointer accent-white"
+          />
+          <span className="w-9 text-[11px] text-neutral-400">{fmt(duration)}</span>
         </div>
       </div>
 
       {/* Volume (desktop) */}
       <div className="hidden flex-1 items-center justify-end gap-2 lg:flex">
         <Volume2 size={18} className="text-neutral-400" />
-        <div className="h-1 w-24 rounded-full bg-neutral-600">
-          <div className="h-1 w-2/3 rounded-full bg-white" />
-        </div>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={volume}
+          onChange={(e) => setVolume(Number(e.target.value))}
+          aria-label="Volume"
+          className="h-1 w-24 cursor-pointer accent-white"
+        />
       </div>
     </footer>
   );
