@@ -21,6 +21,10 @@ export function getMe() {
   return apiFetch<User>("/auth/me");
 }
 
+export function refresh() {
+  return apiFetch<{ accessToken: string }>("/auth/refresh", { method: "POST" });
+}
+
 export function logout() {
   return apiFetch<{ message: string }>("/auth/logout", { method: "POST" });
 }
