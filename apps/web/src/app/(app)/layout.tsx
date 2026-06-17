@@ -6,6 +6,7 @@ import { useAuthStore } from "@/store/auth";
 import { Sidebar } from "@/components/sidebar";
 import { MobileNav } from "@/components/mobile-nav";
 import { Topbar } from "@/components/topbar";
+import { PlayerBar } from "@/components/player-bar";
 
 // Layout da área autenticada (route group "(app)").
 // Protege as rotas: se não houver usuário logado, manda pro /login.
@@ -40,6 +41,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+      <PlayerBar />
       <MobileNav />
     </div>
   );
