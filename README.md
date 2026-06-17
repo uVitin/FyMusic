@@ -40,7 +40,6 @@ Um clone do Spotify full-stack, desenvolvido como projeto de portfólio.
 ├── apps/
 │   ├── web/    # Frontend Next.js
 │   └── api/    # Backend Express + Prisma
-└── packages/   # (código compartilhado)
 ```
 
 ## 🚀 Rodando localmente
