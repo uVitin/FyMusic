@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Search as SearchIcon, Music } from "lucide-react";
 import { searchTracks } from "@/lib/music-api";
 import { usePlayerStore } from "@/store/player";
+import { LikeButton } from "@/components/like-button";
 
 // Converte segundos em "m:ss"
 function formatDuration(seconds: number) {
@@ -85,6 +86,7 @@ export default function SearchPage() {
               <p className="truncate text-sm font-medium">{t.title}</p>
               <p className="truncate text-xs text-neutral-400">{t.artist}</p>
             </div>
+            <LikeButton track={t} />
             <span className="shrink-0 text-xs text-neutral-400">
               {formatDuration(t.duration)}
             </span>

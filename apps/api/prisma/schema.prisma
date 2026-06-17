@@ -10,10 +10,30 @@ datasource db {
 
 // Usuário da aplicação
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String       @id @default(uuid())
+  email        String       @unique
   displayName  String
   passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  likedTracks  LikedTrack[]
+}
+
+// Faixa curtida por um usuário. Como as músicas vêm da Deezer (não estão no
+// nosso banco), guardamos um "retrato" dos dados que precisamos para exibir/tocar.
+model LikedTrack {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId   String // id da faixa na Deezer
+  title     String
+  artist    String
+  album     String
+  image     String?
+  preview   String
+  duration  Int
+  createdAt DateTime @default(now())
+
+  // Um usuário não pode curtir a mesma faixa duas vezes
+  @@unique([userId, trackId])
 }

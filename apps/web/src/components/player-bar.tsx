@@ -12,6 +12,7 @@ import {
   Music,
 } from "lucide-react";
 import { usePlayerStore } from "@/store/player";
+import { LikeButton } from "@/components/like-button";
 
 // Formata segundos em "m:ss"
 function fmt(t: number) {
@@ -56,6 +57,7 @@ export function PlayerBar() {
             {current ? current.artist : "Selecione uma faixa"}
           </p>
         </div>
+            {current && <LikeButton track={current} size={18} />}
       </div>
 
       {/* Controles centrais */}
