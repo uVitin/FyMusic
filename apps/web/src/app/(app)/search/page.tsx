@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { Search as SearchIcon, Music } from "lucide-react";
 import { searchTracks } from "@/lib/music-api";
+import { usePlayerStore } from "@/store/player";
 
 // Converte segundos em "m:ss"
 function formatDuration(seconds: number) {
@@ -16,6 +17,7 @@ function formatDuration(seconds: number) {
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [term, setTerm] = useState("");
+  const playTrack = usePlayerStore((s) => s.playTrack);
 
   // Debounce: só atualiza o termo de busca 400ms após parar de digitar
   useEffect(() => {
@@ -61,7 +63,8 @@ export default function SearchPage() {
         {tracks?.map((t) => (
           <li
             key={t.id}
-            className="flex items-center gap-3 rounded-md px-2 py-2 transition hover:bg-white/10"
+            onClick={() => playTrack(t)}
+            className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition hover:bg-white/10"
           >
             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded">
               {t.image ? (

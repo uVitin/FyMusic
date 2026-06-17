@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
 import {
   Play,
   Pause,
@@ -11,21 +11,38 @@ import {
   Volume2,
   Music,
 } from "lucide-react";
+import { usePlayerStore } from "@/store/player";
 
-// Barra do player (apenas visual por enquanto — tocar áudio vem na fase do player).
+// Barra do player, conectada ao estado global (store/player).
 export function PlayerBar() {
-  const [playing, setPlaying] = useState(false);
+  const current = usePlayerStore((s) => s.current);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const togglePlay = usePlayerStore((s) => s.togglePlay);
 
   return (
     <footer className="flex items-center gap-3 border-t border-neutral-800 bg-[#181818] px-3 py-2 lg:px-4 lg:py-3">
       {/* Faixa atual */}
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-gradient-to-br from-primary to-emerald-800">
-          <Music size={20} className="text-black/70" />
+        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded bg-neutral-800">
+          {current?.image ? (
+            <Image
+              src={current.image}
+              alt={current.title}
+              fill
+              sizes="48px"
+              className="object-cover"
+            />
+          ) : (
+            <Music size={20} className="text-neutral-500" />
+          )}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold">Nenhuma música</p>
-          <p className="truncate text-xs text-neutral-400">Selecione uma faixa</p>
+          <p className="truncate text-sm font-semibold">
+            {current ? current.title : "Nenhuma música"}
+          </p>
+          <p className="truncate text-xs text-neutral-400">
+            {current ? current.artist : "Selecione uma faixa"}
+          </p>
         </div>
       </div>
 
@@ -39,11 +56,16 @@ export function PlayerBar() {
             <SkipBack size={20} />
           </button>
           <button
-            onClick={() => setPlaying((p) => !p)}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition hover:scale-105"
-            aria-label={playing ? "Pausar" : "Tocar"}
+            onClick={togglePlay}
+            disabled={!current}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label={isPlaying ? "Pausar" : "Tocar"}
           >
-            {playing ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
+            {isPlaying ? (
+              <Pause size={18} />
+            ) : (
+              <Play size={18} className="ml-0.5" />
+            )}
           </button>
           <button className="text-neutral-300 transition hover:text-white">
             <SkipForward size={20} />
@@ -53,7 +75,7 @@ export function PlayerBar() {
           </button>
         </div>
 
-        {/* Barra de progresso (desktop) */}
+        {/* Barra de progresso (ainda visual — vira funcional na Parte 2) */}
         <div className="hidden w-full max-w-md items-center gap-2 lg:flex">
           <span className="text-[11px] text-neutral-400">0:00</span>
           <div className="h-1 flex-1 rounded-full bg-neutral-600">

@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/sidebar";
 import { MobileNav } from "@/components/mobile-nav";
 import { Topbar } from "@/components/topbar";
 import { PlayerBar } from "@/components/player-bar";
+import { AudioEngine } from "@/components/audio-engine";
 
 // Layout da área autenticada (route group "(app)").
 // Protege as rotas: se não houver usuário logado, manda pro /login.
@@ -41,6 +42,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+      <AudioEngine />
       <PlayerBar />
       <MobileNav />
     </div>
