@@ -22,13 +22,19 @@ const loginSchema = z.object({
 // Nome e opções do cookie que guarda o refresh token
 const REFRESH_COOKIE = "refreshToken";
 
+const isProd = process.env.NODE_ENV === "production";
+
+const baseCookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  path: "/",
+} as const;
+
 function setRefreshCookie(res: Response, token: string) {
   res.cookie(REFRESH_COOKIE, token, {
-    httpOnly: true, // JS do navegador não consegue ler -> protege contra XSS
-    secure: process.env.NODE_ENV === "production", // só HTTPS em produção
-    sameSite: "lax", // proteção básica contra CSRF
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias em milissegundos
-    path: "/",
+    ...baseCookieOptions,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }
 
@@ -116,6 +122,6 @@ authRouter.post("/refresh", (req, res) => {
 
 // POST /auth/logout — limpa o cookie de refresh
 authRouter.post("/logout", (_req, res) => {
-  res.clearCookie(REFRESH_COOKIE, { path: "/" });
+  res.clearCookie(REFRESH_COOKIE, baseCookieOptions);
   return res.json({ message: "Logout efetuado" });
 });

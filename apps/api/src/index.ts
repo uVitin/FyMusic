@@ -17,6 +17,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Em produção rodamos atrás do proxy HTTPS da plataforma (Render/Railway).
+// "trust proxy" faz o Express reconhecer a conexão como segura (necessário para os cookies Secure funcionarem).
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 // --- Middlewares globais ---
 app.use(
   cors({
