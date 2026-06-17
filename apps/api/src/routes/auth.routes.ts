@@ -2,7 +2,8 @@ import { Router, type Response } from "express";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
-import { signAccessToken, signRefreshToken } from "../lib/jwt";
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../lib/jwt";
+import { requireAuth } from "../middlewares/auth.middleware";
 
 export const authRouter = Router();
 
@@ -49,7 +50,6 @@ authRouter.post("/register", async (req, res) => {
     data: { email, displayName, passwordHash },
   });
 
-  // Gera os tokens e devolve o access token no corpo; refresh vai no cookie
   const accessToken = signAccessToken(user.id);
   setRefreshCookie(res, signRefreshToken(user.id));
 
@@ -84,4 +84,38 @@ authRouter.post("/login", async (req, res) => {
     user: { id: user.id, email: user.email, displayName: user.displayName },
     accessToken,
   });
+});
+
+// GET /auth/me — retorna o usuário logado (rota protegida pelo middleware)
+authRouter.get("/me", requireAuth, async (req, res) => {
+  const user = await prisma.user.findUnique({ where: { id: req.userId } });
+  if (!user) {
+    return res.status(404).json({ error: "Usuário não encontrado" });
+  }
+  return res.json({
+    id: user.id,
+    email: user.email,
+    displayName: user.displayName,
+  });
+});
+
+// POST /auth/refresh — gera um novo access token a partir do cookie de refresh
+authRouter.post("/refresh", (req, res) => {
+  const token = req.cookies?.[REFRESH_COOKIE];
+  if (!token) {
+    return res.status(401).json({ error: "Refresh token ausente" });
+  }
+  try {
+    const payload = verifyRefreshToken(token);
+    const accessToken = signAccessToken(payload.sub);
+    return res.json({ accessToken });
+  } catch {
+    return res.status(401).json({ error: "Refresh token inválido ou expirado" });
+  }
+});
+
+// POST /auth/logout — limpa o cookie de refresh
+authRouter.post("/logout", (_req, res) => {
+  res.clearCookie(REFRESH_COOKIE, { path: "/" });
+  return res.json({ message: "Logout efetuado" });
 });
