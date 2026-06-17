@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname, "../.."),
   },
+  // Libera o domínio das capas da Deezer para o componente next/image
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn-images.dzcdn.net" },
+    ],
+  },
 };
 
 export default nextConfig;
