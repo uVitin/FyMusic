@@ -2,23 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import { Search as SearchIcon, Music } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 import { searchTracks } from "@/lib/music-api";
-import { usePlayerStore } from "@/store/player";
-import { LikeButton } from "@/components/like-button";
-
-// Converte segundos em "m:ss"
-function formatDuration(seconds: number) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
+import { TrackRow } from "@/components/track-row";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [term, setTerm] = useState("");
-  const playTrack = usePlayerStore((s) => s.playTrack);
 
   // Debounce: só atualiza o termo de busca 400ms após parar de digitar
   useEffect(() => {
@@ -62,35 +52,7 @@ export default function SearchPage() {
 
       <ul className="flex flex-col">
         {tracks?.map((t) => (
-          <li
-            key={t.id}
-            onClick={() => playTrack(t)}
-            className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition hover:bg-white/10"
-          >
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded">
-              {t.image ? (
-                <Image
-                  src={t.image}
-                  alt={t.title}
-                  fill
-                  sizes="40px"
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-neutral-700">
-                  <Music size={16} className="text-neutral-400" />
-                </div>
-              )}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{t.title}</p>
-              <p className="truncate text-xs text-neutral-400">{t.artist}</p>
-            </div>
-            <LikeButton track={t} />
-            <span className="shrink-0 text-xs text-neutral-400">
-              {formatDuration(t.duration)}
-            </span>
-          </li>
+          <TrackRow key={t.id} track={t} />
         ))}
       </ul>
     </div>
