@@ -1,8 +1,9 @@
-import { Home, Search, Library, type LucideIcon } from "lucide-react";
+import { Home, Search, Library, ListMusic, type LucideIcon } from "lucide-react";
 
 // Itens de navegação compartilhados pela sidebar (desktop) e a barra inferior (mobile)
 export const navItems: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/", label: "Início", icon: Home },
   { href: "/search", label: "Buscar", icon: Search },
   { href: "/library", label: "Sua Biblioteca", icon: Library },
+  { href: "/queue", label: "Fila", icon: ListMusic },
 ];
