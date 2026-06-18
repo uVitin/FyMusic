@@ -46,6 +46,7 @@ export default function HomePage() {
         {albums?.map((album) => (
           <AlbumCard
             key={album.id}
+            id={album.id}
             name={album.name}
             artist={album.artist}
             image={album.image}

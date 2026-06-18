@@ -33,6 +33,22 @@ type Track = {
   duration: number;
 };
 
+type DeezerAlbumTrack = {
+  id: number;
+  title: string;
+  duration: number;
+  preview: string;
+  artist: DeezerArtist;
+};
+
+type DeezerAlbumFull = {
+  id: number;
+  title: string;
+  cover_medium: string;
+  artist: DeezerArtist;
+  tracks: { data: DeezerAlbumTrack[] };
+};
+
 function toAlbum(a: DeezerAlbum): Album {
   return {
     id: a.id,
@@ -71,4 +87,28 @@ musicRouter.get("/search", async (req, res) => {
     `/search?q=${encodeURIComponent(q)}&limit=25`
   );
   res.json(data.data.map(toTrack));
+});
+
+// GET /music/album/:id — detalhes de um álbum + suas faixas
+musicRouter.get("/album/:id", async (req, res) => {
+  const data = await deezerFetch<DeezerAlbumFull>(`/album/${req.params.id}`);
+  const image = data.cover_medium ?? null;
+
+  const tracks: Track[] = (data.tracks?.data ?? []).map((t) => ({
+    id: t.id,
+    title: t.title,
+    artist: t.artist?.name ?? data.artist?.name ?? "",
+    album: data.title,
+    image, // a capa do álbum vale para todas as faixas
+    preview: t.preview,
+    duration: t.duration,
+  }));
+
+  res.json({
+    id: data.id,
+    name: data.title,
+    artist: data.artist?.name ?? "",
+    image,
+    tracks,
+  });
 });

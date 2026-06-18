@@ -17,8 +17,16 @@ export type Track = {
   duration: number;
 };
 
+export type AlbumDetail = Album & {
+  tracks: Track[];
+};
+
 export function getHomeAlbums() {
   return apiFetch<Album[]>("/music/home");
+}
+
+export function getAlbum(id: string | number) {
+  return apiFetch<AlbumDetail>(`/music/album/${id}`);
 }
 
 export function searchTracks(q: string) {

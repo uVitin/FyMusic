@@ -1,18 +1,23 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { Play, Music } from "lucide-react";
 
 type Props = {
+  id: number;
   name: string;
   artist: string;
   image: string | null;
 };
 
-// Card de álbum com capa real (ou placeholder) e botão de play no hover
-export function AlbumCard({ name, artist, image }: Props) {
+// Card de álbum: clicar abre a página do álbum (/album/[id])
+export function AlbumCard({ id, name, artist, image }: Props) {
   return (
-    <div className="group cursor-pointer rounded-md bg-[#181818] p-3 transition hover:bg-[#282828]">
+    <Link
+      href={`/album/${id}`}
+      className="group block cursor-pointer rounded-md bg-[#181818] p-3 transition hover:bg-[#282828]"
+    >
       <div className="relative mb-3">
         <div className="relative aspect-square w-full overflow-hidden rounded shadow-lg">
           {image ? (
@@ -29,15 +34,12 @@ export function AlbumCard({ name, artist, image }: Props) {
             </div>
           )}
         </div>
-        <button
-          className="absolute bottom-2 right-2 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-primary text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
-          aria-label={`Tocar ${name}`}
-        >
+        <span className="absolute bottom-2 right-2 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-primary text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <Play size={18} className="ml-0.5" fill="currentColor" />
-        </button>
+        </span>
       </div>
       <p className="truncate text-sm font-semibold">{name}</p>
       <p className="mt-1 truncate text-xs text-neutral-400">{artist}</p>
-    </div>
+    </Link>
   );
 }
