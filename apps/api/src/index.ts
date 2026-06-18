@@ -10,6 +10,7 @@ import { authRouter } from "./routes/auth.routes";
 import { musicRouter } from "./routes/music.routes";
 import { likesRouter } from "./routes/likes.routes";
 import { requireAuth } from "./middlewares/auth.middleware";
+import { playlistsRouter } from "./routes/playlists.routes";
 
 // Carrega as variáveis do arquivo .env para process.env
 dotenv.config();
@@ -46,6 +47,9 @@ app.use("/music", musicRouter);
 
 // Rotas de favoritos (protegidas: exigem login)
 app.use("/likes", requireAuth, likesRouter);
+
+// Rotas de playlists (protegidas: exigem login)
+app.use("/playlists", requireAuth, playlistsRouter);
 
 // --- Tratador de erros: devolve JSON em vez de página HTML ---
 // (no Express 5, erros lançados em handlers async chegam aqui automaticamente)

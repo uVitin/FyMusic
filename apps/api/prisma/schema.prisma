@@ -17,6 +17,7 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   likedTracks  LikedTrack[]
+  playlists    Playlist[]
 }
 
 // Faixa curtida por um usuário. Como as músicas vêm da Deezer (não estão no
@@ -36,4 +37,32 @@ model LikedTrack {
 
   // Um usuário não pode curtir a mesma faixa duas vezes
   @@unique([userId, trackId])
+}
+
+// Playlist criada por um usuário
+model Playlist {
+  id        String          @id @default(uuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime        @default(now())
+  tracks    PlaylistTrack[]
+}
+
+// Faixa dentro de uma playlist (mesmo "retrato" da Deezer)
+model PlaylistTrack {
+  id         String   @id @default(uuid())
+  playlistId String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  trackId    String
+  title      String
+  artist     String
+  album      String
+  image      String?
+  preview    String
+  duration   Int
+  addedAt    DateTime @default(now())
+
+  // A mesma faixa não entra duas vezes na mesma playlist
+  @@unique([playlistId, trackId])
 }

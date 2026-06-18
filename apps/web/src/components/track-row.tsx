@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { Music } from "lucide-react";
+import { Music, X } from "lucide-react";
 import type { Track } from "@/lib/music-api";
 import { usePlayerStore } from "@/store/player";
 import { LikeButton } from "./like-button";
+import { AddToPlaylistButton } from "./add-to-playlist-button";
 
 // Converte segundos em "m:ss"
 function formatDuration(seconds: number) {
@@ -20,10 +21,12 @@ export function TrackRow({
   track,
   queue,
   index,
+  onRemove,
 }: {
   track: Track;
   queue?: Track[];
   index?: number;
+  onRemove?: () => void; // Se passado, mostra um "X" para remover (ex: da playlist)
 }) {
   const playTrack = usePlayerStore((s) => s.playTrack);
   const playQueue = usePlayerStore((s) => s.playQueue);
@@ -71,9 +74,22 @@ export function TrackRow({
         <p className="truncate text-xs text-neutral-400">{track.artist}</p>
       </div>
       <LikeButton track={track} />
+      <AddToPlaylistButton track={track} />
       <span className="shrink-0 text-xs text-neutral-400">
         {formatDuration(track.duration)}
       </span>
+      {onRemove && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          aria-label="Remover da playlist"
+          className="shrink-0 text-neutral-400 transition hover:text-red-400"
+        >
+          <X size={16} />
+        </button>
+      )}
     </li>
   );
 }
