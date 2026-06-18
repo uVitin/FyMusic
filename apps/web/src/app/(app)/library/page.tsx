@@ -17,8 +17,8 @@ export default function LibraryPage() {
         </p>
       ) : (
         <ul className="flex flex-col">
-          {likes.map((track) => (
-            <TrackRow key={track.id} track={track} />
+          {likes.map((track, i) => (
+            <TrackRow key={track.id} track={track} queue={likes} index={i} />
           ))}
         </ul>
       )}

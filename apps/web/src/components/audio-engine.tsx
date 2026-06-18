@@ -11,6 +11,7 @@ export function AudioEngine() {
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const volume = usePlayerStore((s) => s.volume);
   const seekRequest = usePlayerStore((s) => s.seekRequest);
+  const next = usePlayerStore((s) => s.next);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const setProgress = usePlayerStore((s) => s.setProgress);
   const setDuration = usePlayerStore((s) => s.setDuration);
@@ -54,7 +55,7 @@ export function AudioEngine() {
       ref={audioRef}
       onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
       onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-      onEnded={() => setIsPlaying(false)}
+      onEnded={() => next()}
     />
   );
 }

@@ -12,6 +12,7 @@ export default function AlbumPage() {
   const params = useParams();
   const id = String(params.id);
   const playTrack = usePlayerStore((s) => s.playTrack);
+  const playQueue = usePlayerStore((s) => s.playQueue);
 
   const {
     data: album,
@@ -63,7 +64,7 @@ export default function AlbumPage() {
 
       {/* Botão de tocar o álbum (começa pela 1ª faixa) */}
       <button
-        onClick={() => album.tracks[0] && playTrack(album.tracks[0])}
+        onClick={() => playQueue(album.tracks, 0)}
         disabled={album.tracks.length === 0}
         className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-black transition hover:scale-105 disabled:opacity-50"
         aria-label="Tocar álbum"
@@ -73,8 +74,8 @@ export default function AlbumPage() {
 
       {/* Lista de faixas (reusa o TrackRow) */}
       <ul className="flex flex-col">
-        {album.tracks.map((track) => (
-          <TrackRow key={track.id} track={track} />
+        {album.tracks.map((track, i) => (
+          <TrackRow key={track.id} track={track} queue={album.tracks} index={i} />
         ))}
       </ul>
     </div>

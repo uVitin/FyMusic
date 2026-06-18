@@ -13,15 +13,34 @@ function formatDuration(seconds: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-// Linha de faixa reutilizável (busca, biblioteca, etc.): clicar toca a música.
-export function TrackRow({ track }: { track: Track }) {
+// Linha de faixa reutilizável (busca, biblioteca, álbum...).
+// Se receber `queue` + `index`, clicar toca a lista inteira a partir dali
+// (assim "próxima/anterior" navegam na lista). Senão, toca só a faixa.
+export function TrackRow({
+  track,
+  queue,
+  index,
+}: {
+  track: Track;
+  queue?: Track[];
+  index?: number;
+}) {
   const playTrack = usePlayerStore((s) => s.playTrack);
+  const playQueue = usePlayerStore((s) => s.playQueue);
   const current = usePlayerStore((s) => s.current);
   const isCurrent = current?.id === track.id;
 
+  function handlePlay() {
+    if (queue && index !== undefined) {
+      playQueue(queue, index);
+    } else {
+      playTrack(track);
+    }
+  }
+
   return (
     <li
-      onClick={() => playTrack(track)}
+      onClick={handlePlay}
       className={`flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition hover:bg-white/10 ${
         isCurrent ? "bg-white/5" : ""
       }`}

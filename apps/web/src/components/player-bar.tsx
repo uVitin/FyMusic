@@ -28,6 +28,8 @@ export function PlayerBar() {
   const progress = usePlayerStore((s) => s.progress);
   const duration = usePlayerStore((s) => s.duration);
   const volume = usePlayerStore((s) => s.volume);
+  const next = usePlayerStore((s) => s.next);
+  const previous = usePlayerStore((s) => s.previous);
   const togglePlay = usePlayerStore((s) => s.togglePlay);
   const requestSeek = usePlayerStore((s) => s.requestSeek);
   const setVolume = usePlayerStore((s) => s.setVolume);
@@ -66,7 +68,10 @@ export function PlayerBar() {
           <button className="hidden text-neutral-400 transition hover:text-white lg:block">
             <Shuffle size={18} />
           </button>
-          <button className="text-neutral-300 transition hover:text-white">
+          <button
+            onClick={previous}
+            disabled={!current}
+            className="text-neutral-300 transition hover:text-white disabled:opacity-40">
             <SkipBack size={20} />
           </button>
           <button
@@ -81,7 +86,10 @@ export function PlayerBar() {
               <Play size={18} className="ml-0.5" />
             )}
           </button>
-          <button className="text-neutral-300 transition hover:text-white">
+          <button 
+            onClick={next}
+            disabled={!current}
+            className="text-neutral-300 transition hover:text-white disabled:opacity-40">
             <SkipForward size={20} />
           </button>
           <button className="hidden text-neutral-400 transition hover:text-white lg:block">

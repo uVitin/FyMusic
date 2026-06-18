@@ -51,8 +51,8 @@ export default function SearchPage() {
       )}
 
       <ul className="flex flex-col">
-        {tracks?.map((t) => (
-          <TrackRow key={t.id} track={t} />
+        {tracks?.map((t, i) => (
+          <TrackRow key={t.id} track={t} queue={tracks} index={i} />
         ))}
       </ul>
     </div>
